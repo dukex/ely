@@ -1,0 +1,3 @@
+endpoint:
+  - path: "/status"
+    function: 'status'

@@ -7,3 +7,5 @@ clean:
 
 build: clean bin/ely
 
+build_and_run: build 
+	./bin/ely -c examples/ely.yaml
