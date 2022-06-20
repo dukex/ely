@@ -1,0 +1,1 @@
+DROP EXTENSION plpython3u
