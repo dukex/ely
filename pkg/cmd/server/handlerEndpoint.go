@@ -17,7 +17,7 @@ func handleEndpoint(endpoint config.Endpoint, db *sql.DB) http.Handler {
 			body    string
 			headers string
 		)
-		err := db.QueryRow("SELECT status, body, headers FROM "+endpoint.Function+"()").Scan(&status, &body, &headers)
+		err := db.QueryRow("SELECT status, body, headers FROM "+endpoint.Function+"('{}')").Scan(&status, &body, &headers)
 
 		cmd.CheckError(err)
 

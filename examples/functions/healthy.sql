@@ -1,5 +1,7 @@
-CREATE OR REPLACE FUNCTION healthy() RETURNS http_response AS $$
-BEGIN
-    return (200, '{ "healthy": true }'::jsonb,'{ "Content-Type": "application/json" }'::jsonb );
-END;
-$$ LANGUAGE plpgsql;
+CREATE OR REPLACE FUNCTION healthy(req jsonb)
+  RETURNS http_response
+AS $$
+    import json
+
+    return [200, json.dumps({ "healthy": True }), { "Content-Type": "application/json" }]
+$$ LANGUAGE plpython3u;

@@ -1,3 +1,5 @@
 endpoint:
   - path: "/healthy"
     function: 'healthy'
+  - path: "/users"
+    function: 'usersindex'
