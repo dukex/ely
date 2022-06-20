@@ -14,17 +14,17 @@ CREATE OR REPLACE FUNCTION usersindex(req jsonb)
 AS $$
     import json
     global req
-    params = json.loads(req)
+    request = json.loads(req)
 
-    q = params.get("query", dict({})).get("q")
+    enabled = request.get("params", dict({})).get("enabled")
 
-    users = plpy.execute("SELECT * FROM users", 5)
+    plan = plpy.prepare("SELECT * FROM users WHERE enabled = $1", [ "boolean" ])
 
-    body = []
-    for u in users:
-        body.append(dict(u))
+    users = plpy.execute(plan, [ enabled != 'false' ])
 
-    return [200, json.dumps(body), { "Content-Type": "application/json" }]
+    body = [dict(user) for user in users]
+
+    return [200, json.dumps(body), json.dumps({ "Content-Type": "application/json" })]
 $$ LANGUAGE plpython3u;
 ```
 
@@ -44,4 +44,4 @@ ely server -p 3000 -c ./examples/ely.yaml
 
 Access the endpoint:
 
-[localhost:3000/users](https://localhost:3000/users)
+[localhost:3000/users](http://localhost:3000/users)

@@ -3,15 +3,15 @@ CREATE OR REPLACE FUNCTION usersindex(req jsonb)
 AS $$
     import json
     global req
-    params = json.loads(req)
+    request = json.loads(req)
 
-    q = params.get("query", dict({})).get("q")
-    
-    users = plpy.execute("SELECT * FROM users", 5)
-    
-    body = []
-    for u in users:
-        body.append(dict(u))
-        
-    return [200, json.dumps(body), { "Content-Type": "application/json" }]
+    enabled = request.get("params", dict({})).get("enabled")
+
+    plan = plpy.prepare("SELECT * FROM users WHERE enabled = $1", [ "boolean" ])
+
+    users = plpy.execute(plan, [ enabled != 'false' ])
+
+    body = [dict(user) for user in users]
+
+    return [200, json.dumps(body), json.dumps({ "Content-Type": "application/json" })]
 $$ LANGUAGE plpython3u;
