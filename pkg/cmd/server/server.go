@@ -1,16 +1,14 @@
 package server
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 
-	_ "github.com/lib/pq"
-
 	"github.com/dukex/ely/pkg/cmd"
 	"github.com/dukex/ely/pkg/config"
+	"github.com/dukex/ely/pkg/database"
 	"github.com/spf13/cobra"
 )
 
@@ -51,10 +49,7 @@ func defaultHandler() http.Handler {
 func newServer(port int, c config.Config) error {
 	mux := http.NewServeMux()
 
-	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
-	cmd.CheckError(err)
-
-	err = db.Ping()
+	db, err := database.NewDatabase()
 	cmd.CheckError(err)
 
 	for _, endpoint := range c.Endpoints {
