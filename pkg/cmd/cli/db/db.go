@@ -23,7 +23,7 @@ func NewCommand() *cobra.Command {
 		Use: "setup",
 		Run: func(c *cobra.Command, args []string) {
 			databaseURL := os.Getenv("DATABASE_URL")
-			sourceURL := "github://dukex/ely/migrations#master"
+			sourceURL := "github://dukex/ely/migrations#main"
 
 			m, err := migrate.New(sourceURL, databaseURL)
 
