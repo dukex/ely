@@ -8,7 +8,7 @@ See the [Makefile](Makefile) the task `build_and_run` and the [examples](example
 
 Create the `usersindex` function as:
 
-````
+```
 CREATE OR REPLACE FUNCTION usersindex(req jsonb)
   RETURNS http_response
 AS $$
