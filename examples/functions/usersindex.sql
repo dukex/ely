@@ -1,17 +1,15 @@
-CREATE OR REPLACE FUNCTION usersindex(req jsonb)
+CREATE OR REPLACE FUNCTION usersindex()
   RETURNS http_response
 AS $$
-    import json
-    global req
-    request = json.loads(req)
+    ely = GD['ely']
+    render_json = ely['render_json']
+    params = ely['params']
 
-    enabled = request.get("params", dict({})).get("enabled")
+    enabled = params("enabled")
 
     plan = plpy.prepare("SELECT * FROM users WHERE enabled = $1", [ "boolean" ])
 
     users = plpy.execute(plan, [ enabled != 'false' ])
 
-    body = [dict(user) for user in users]
-
-    return [200, json.dumps(body), json.dumps({ "Content-Type": "application/json" })]
+    return render_json([dict(user) for user in users]) 
 $$ LANGUAGE plpython3u;

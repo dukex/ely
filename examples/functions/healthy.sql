@@ -1,7 +1,8 @@
-CREATE OR REPLACE FUNCTION healthy(req jsonb)
+CREATE OR REPLACE FUNCTION healthy()
   RETURNS http_response
 AS $$
-    import json
+    ely = GD['ely']
+    render_json = ely['render_json']
 
-    return [200, json.dumps({ "healthy": True }), { "Content-Type": "application/json" }]
+    return render_json({ "healthy": True });
 $$ LANGUAGE plpython3u;

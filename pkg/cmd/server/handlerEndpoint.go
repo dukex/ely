@@ -47,8 +47,8 @@ func handleEndpoint(endpoint config.Endpoint, db *sql.DB) http.Handler {
 
 		cmd.CheckError(err)
 
-		fn := fmt.Sprintf("%s('%s')", endpoint.Function, requestParams)
-		query := fmt.Sprintf("SELECT status, body, headers FROM %s", fn)
+		fn := fmt.Sprintf("boot('%s'::text, '%s'::jsonb)", endpoint.Function, requestParams)
+		query := fmt.Sprintf(" SELECT status, body, headers FROM %s", fn)
 
 		var (
 			status  int
