@@ -67,16 +67,17 @@ $ touch functions/healthy.sql
 Open the `functions/healthy.sql` file and put the follow content:
 
 ```
-CREATE OR REPLACE FUNCTION healthy(req jsonb)
+CREATE OR REPLACE FUNCTION healthy()
   RETURNS http_response
 AS $$
-    import json
+    ely = GD['ely']
+    render_json = ely['render_json']
 
-    return [200, json.dumps({ "healthy": True }), { "Content-Type": "application/json" }]
+    return render_json({ "healthy": True });
 $$ LANGUAGE plpython3u;
 ```
 
-This functions basically will responds the HTTP Status 200, with a json `{ "healthy": true }`.
+This functions basically will responds the HTTP Status 200, with a JSON `{ "healthy": true }`.
 
 Now let's to deploy the function to the database:
 
@@ -126,22 +127,20 @@ $ touch functions/userindex.sql
 Open the `functions/userindex.sql` file and put the follow content:
 
 ```
-CREATE OR REPLACE FUNCTION usersindex(req jsonb)
+CREATE OR REPLACE FUNCTION usersindex()
   RETURNS http_response
 AS $$
-    import json
-    global req
-    request = json.loads(req)
+    ely = GD['ely']
+    render_json = ely['render_json']
+    params = ely['params']
 
-    enabled = request.get("params", dict({})).get("enabled")
+    enabled = params("enabled")
 
     plan = plpy.prepare("SELECT * FROM users WHERE enabled = $1", [ "boolean" ])
 
     users = plpy.execute(plan, [ enabled != 'false' ])
 
-    body = [dict(user) for user in users]
-
-    return [200, json.dumps(body), json.dumps({ "Content-Type": "application/json" })]
+    return render_json([dict(user) for user in users]) 
 $$ LANGUAGE plpython3u;
 ```
 
@@ -159,6 +158,6 @@ Run server:
 $ ely server
 ```
 
-Access the endpoint [localhost:9001/users](http://localhost:9001/users). You can send the enabled query string params to see diferents results [localhost:9001/users?enabled=false](http://localhost:9001/users?enabled=false)
+Access the endpoint [localhost:9001/users](http://localhost:9001/users). You can send the enabled query string params to see different results [localhost:9001/users?enabled=false](http://localhost:9001/users?enabled=false)
 
 
